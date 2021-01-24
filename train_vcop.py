@@ -15,6 +15,7 @@ from torchvision import transforms
 import torch.optim as optim
 from tensorboardX import SummaryWriter
 
+from datasets.cater import CATERVCOPDataset
 from datasets.ucf101 import UCF101VCOPDataset
 from models.c3d import C3D
 from models.r3d import R3DNet
@@ -39,7 +40,7 @@ def train(args, model, criterion, optimizer, device, train_dataloader, writer, e
     running_loss = 0.0
     correct = 0
     for i, data in enumerate(train_dataloader, 1):
-        # get inputs
+        # get inputs 
         tuple_clips, tuple_orders = data
         inputs = tuple_clips.to(device)
         targets = [order_class_index(order) for order in tuple_orders]
@@ -68,7 +69,7 @@ def train(args, model, criterion, optimizer, device, train_dataloader, writer, e
     # summary params and grads per eopch
     for name, param in model.named_parameters():
         writer.add_histogram('params/{}'.format(name), param, epoch)
-        writer.add_histogram('grads/{}'.format(name), param.grad, epoch)
+        writer.add_histogram('grads/{}'.format(name),param.grad, epoch)
 
 
 def validate(args, model, criterion, device, val_dataloader, writer, epoch):
@@ -191,7 +192,8 @@ if __name__ == '__main__':
             transforms.RandomCrop(112),
             transforms.ToTensor()
         ])
-        train_dataset = UCF101VCOPDataset('data/ucf101', args.cl, args.it, args.tl, True, train_transforms)
+        train_dataset = CATERVCOPDataset('data/cater', args.cl, args.it, args.tl, True, train_transforms)
+        # train_dataset = UCF101VCOPDataset('data/ucf101', args.cl, args.it, args.tl, True, train_transforms)
         # split val for 800 videos
         train_dataset, val_dataset = random_split(train_dataset, (len(train_dataset)-800, 800))
         print('TRAIN video number: {}, VAL video number: {}.'.format(len(train_dataset), len(val_dataset)))
