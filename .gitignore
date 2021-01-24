@@ -1,3 +1,4 @@
-cater
+data/cater/videos
+data/ucf101/videos
 .venv
 .vscode
