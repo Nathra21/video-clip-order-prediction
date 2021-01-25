@@ -16,6 +16,7 @@ from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 from PIL import Image
 
+import pdb
 
 class UCF101Dataset(Dataset):
     """UCF101 dataset for recognition. The class index start from 0.
@@ -210,11 +211,11 @@ class UCF101VCOPDataset(Dataset):
         self.tuple_total_frames = clip_len * tuple_len + interval * (tuple_len - 1)
 
         if self.train:
-            vcop_train_split_name = 'vcop_train_{}_{}_{}.txt'.format(clip_len, interval, tuple_len)
+            vcop_train_split_name = 'vcop_train.txt'
             vcop_train_split_path = os.path.join(root_dir, 'split', vcop_train_split_name)
             self.train_split = pd.read_csv(vcop_train_split_path, header=None)[0]
         else:
-            vcop_test_split_name = 'vcop_test_{}_{}_{}.txt'.format(clip_len, interval, tuple_len)
+            vcop_test_split_name = 'vcop_test.txt'
             vcop_test_split_path = os.path.join(root_dir, 'split', vcop_test_split_name)
             self.test_split = pd.read_csv(vcop_test_split_path, header=None)[0]
 
@@ -235,7 +236,7 @@ class UCF101VCOPDataset(Dataset):
         else:
             videoname = self.test_split[idx]
         
-        filename = os.path.join(self.root_dir, 'video', videoname)
+        filename = os.path.join(self.root_dir, 'videos', videoname)
         videodata = skvideo.io.vread(filename)
         length, height, width, channel = videodata.shape
 
